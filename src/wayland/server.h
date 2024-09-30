@@ -21,40 +21,42 @@
 #include <assert.h>
 #include <getopt.h>
 #include <stdbool.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 #include <wayland-server-core.h>
 #include <wlr/backend.h>
 #include <wlr/render/allocator.h>
 #include <wlr/render/wlr_renderer.h>
-#include <wlr/types/wlr_cursor.h>
 #include <wlr/types/wlr_compositor.h>
+#include <wlr/types/wlr_cursor.h>
 #include <wlr/types/wlr_data_device.h>
+#include <wlr/types/wlr_idle_notify_v1.h>
 #include <wlr/types/wlr_input_device.h>
 #include <wlr/types/wlr_keyboard.h>
 #include <wlr/types/wlr_output.h>
 #include <wlr/types/wlr_output_layout.h>
 #include <wlr/types/wlr_pointer.h>
+#include <wlr/types/wlr_primary_selection_v1.h>
 #include <wlr/types/wlr_scene.h>
 #include <wlr/types/wlr_seat.h>
 #include <wlr/types/wlr_subcompositor.h>
 #include <wlr/types/wlr_xcursor_manager.h>
 #include <wlr/types/wlr_xdg_shell.h>
-#include <wlr/xwayland.h>
 #include <wlr/util/log.h>
+#include <wlr/xwayland.h>
 #include <xkbcommon/xkbcommon.h>
 
 #include <glib.h>
 #include <gtk/gtk.h>
 
 #ifdef USE_NLS
-#	include <libintl.h>
-#	include <locale.h>
-#	define _ gettext
+#include <libintl.h>
+#include <locale.h>
+#define _ gettext
 #else
-#	define _(s) (s)
+#define _(s) (s)
 #endif
 
 #include "cursor.h"
@@ -65,58 +67,57 @@
 
 typedef struct _Client Client;
 
-struct _xfwmWaylandCompositor
-{
-    struct wl_display *wl_display;
-    struct wlr_backend *backend;
-    struct wlr_renderer *renderer;
-    struct wlr_allocator *allocator;
-    struct wlr_compositor *compositor;
-    struct wlr_subcompositor *subcompositor;
-    struct wlr_scene *scene;
+struct _xfwmWaylandCompositor {
+  struct wl_display *wl_display;
+  struct wlr_backend *backend;
+  struct wlr_renderer *renderer;
+  struct wlr_allocator *allocator;
+  struct wlr_compositor *compositor;
+  struct wlr_subcompositor *subcompositor;
+  struct wlr_scene *scene;
 
-    struct wlr_xdg_shell *xdg_shell;
-    struct wl_listener new_xdg_surface;
-    struct wl_list views;
+  struct wlr_xdg_shell *xdg_shell;
+  struct wl_listener new_xdg_surface;
+  struct wl_list views;
 
-    xfwmCursor *cursor;
-    struct wlr_xcursor_manager *cursor_mgr;
-    struct wl_listener cursor_motion;
-    struct wl_listener cursor_motion_absolute;
-    struct wl_listener cursor_button;
-    struct wl_listener cursor_axis;
-    struct wl_listener cursor_frame;
+  xfwmCursor *cursor;
+  struct wlr_xcursor_manager *cursor_mgr;
+  struct wl_listener cursor_motion;
+  struct wl_listener cursor_motion_absolute;
+  struct wl_listener cursor_button;
+  struct wl_listener cursor_axis;
+  struct wl_listener cursor_frame;
 
-    Seat *seat;
-    struct wl_listener new_input;
-    struct wl_listener request_cursor;
-    struct wl_listener request_set_selection;
-    struct wl_list keyboards;
-    Client *grabbed_view;
-    double grab_x, grab_y;
-    struct wlr_box grab_geobox;
-    uint32_t resize_edges;
+  Seat *seat;
+  struct wl_listener new_input;
+  struct wl_listener request_cursor;
+  struct wl_listener request_set_selection;
+  struct wl_list keyboards;
+  Client *grabbed_view;
+  double grab_x, grab_y;
+  struct wlr_box grab_geobox;
+  uint32_t resize_edges;
 
-    struct wlr_layer_shell_v1 *layer_shell;
-    struct wl_listener new_layer_surface;
+  struct wlr_layer_shell_v1 *layer_shell;
+  struct wl_listener new_layer_surface;
 
-    struct wlr_idle_notifier_v1 *idle_notifier;
+  struct wlr_idle_notifier_v1 *idle_notifier;
 
-    struct wlr_xwayland *xwayland;
-    struct wl_listener new_xwayland_surface;
-    struct wl_listener xwayland_ready;
+  struct wlr_xwayland *xwayland;
+  struct wl_listener new_xwayland_surface;
+  struct wl_listener xwayland_ready;
 
-    struct wl_listener new_xdg_decoration;
+  struct wl_listener new_xdg_decoration;
 
-    struct wlr_output_layout *output_layout;
-    struct wl_list outputs;
-    struct wl_listener new_output;
+  struct wlr_output_layout *output_layout;
+  struct wl_list outputs;
+  struct wl_listener new_output;
 };
 
 typedef struct _xfwmWaylandCompositor xfwmWaylandCompositor;
 
-void xfwmWaylandInit (void);
-xfwmWaylandCompositor * xfwmWaylandGetDefault (void);
-gboolean terminate (xfwmWaylandCompositor *server);
+void xfwmWaylandInit(void);
+xfwmWaylandCompositor *xfwmWaylandGetDefault(void);
+gboolean terminate(xfwmWaylandCompositor *server);
 
 #endif /* server.h */

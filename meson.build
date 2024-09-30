@@ -1,6 +1,6 @@
 project('xfwm4', 'c',
   version: '4.18.0',
-  meson_version: '>=0.50',
+  meson_version: '>=0.54',
   default_options: 'c_std=gnu11',)
   
 xfwm4_version = meson.project_version()
@@ -66,7 +66,7 @@ cairo          = dependency('cairo')
 pango          = dependency('pango')
 pangocairo     = dependency('pangocairo')
 glesv2	       = dependency('glesv2')
-wlroots        = dependency('wlroots', version: ['>=0.16.0', '<0.17.0'])
+wlroots        = dependency('wlroots', version: ['>=0.17.0', '<0.18.0'])
 xkbcommon      = dependency('xkbcommon')
 glib           = dependency('glib-2.0', version: '>=' + glib_minimum_version)
 x11            = dependency('x11')
@@ -97,6 +97,17 @@ xinerama       = dependency('xinerama')
 
 m_dep          = cc.find_library('m')
 
+wlroots_features = {
+  'xwayland': false,
+  'libinput_backend': false,
+  'session': false,
+}
+foreach name, _: wlroots_features
+  var_name = 'have_' + name.underscorify()
+  have = wlroots.get_variable(pkgconfig: var_name, internal: var_name) == 'true'
+  wlroots_features += {name: have}
+endforeach
+
 # glibc lacks strl*. if we can't detect them, assume we need libbsd
 lacking_libc = false
 if cc.has_function('strlcpy') == false or cc.has_function('strlcat') == false
@@ -104,7 +115,7 @@ if cc.has_function('strlcpy') == false or cc.has_function('strlcat') == false
   bsd_overlay = dependency('libbsd-overlay')
 endif
 
-if get_option('xwayland')
+if wlroots_features['xwayland']
 	xcb    = dependency('xcb', required: true)
 
 	if xcb.found()
