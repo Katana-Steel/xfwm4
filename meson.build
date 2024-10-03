@@ -1,5 +1,5 @@
 project('xfwm4', 'c',
-  version: '4.18.0',
+  version: '4.20.0',
   meson_version: '>=0.54',
   default_options: 'c_std=gnu11',)
   
@@ -11,7 +11,7 @@ xfwm4_major_version = ver_arr[0]
 xfwm4_minor_version = ver_arr[1]
 xfwm4_micro_version = ver_arr[2]
 
-glib_minimum_version = '2.66.0'
+glib_minimum_version = '2.72.0'
 gtk_minimum_version = '3.24.0'
 xfce_minimum_version = '4.8.0'
 libxfce4ui_minimum_version = '4.12.0'
